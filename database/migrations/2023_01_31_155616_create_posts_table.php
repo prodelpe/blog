@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,6 +17,7 @@ return new class extends Migration {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Category::class);
             $table->string('title');
             $table->text('content');
             $table->timestamps();
