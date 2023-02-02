@@ -35,6 +35,7 @@ class SetScout extends Command
         Artisan::call('scout:import', ['model' => Category::class]);
         Artisan::call('scout:import', ['model' => Post::class]);
         Artisan::call('scout:import', ['model' => User::class]);
+        //Artisan::call('queue:work redis');
 
         return Command::SUCCESS;
     }

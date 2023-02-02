@@ -27,21 +27,19 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
-    /* Ja és així per defecte, només apuntat com a referència */
-//    public function searchableAs()
-//    {
-//        return 'posts';
-//    }
-
-    /* En principi això es fa ja per defecte */
     public function toSearchableArray(): array
     {
         return [
-            'id' => (int)$this->id,
+            'id' => $this->getKey(),
             'title' => $this->title,
             'content' => $this->content,
             'user_id' => (int)$this->user_id,
             'category_id' => (int)$this->category_id,
         ];
+    }
+
+    protected function makeAllSearchableUsing($query)
+    {
+        return $query->with(['user:id,name', 'category:id,name']);
     }
 }
