@@ -40,21 +40,14 @@ class Search extends Component
 
     public function search()
     {
-        $this->searchResult = Post::search(trim($this->searchString) ?? '', function (Indexes $meilisearch, $query, $options) {
-            $options['facets'] = $this->facets;
-
-            return $meilisearch->search($query, $options);
-        })
-
+        $this->searchResult = Post::search(trim($this->searchString) ?? '')
+            ->options(['facets' => $this->facets])
             ->when(!empty($this->filters), function (Builder $query) {
                 foreach ($this->filters as $key => $values) {
                     $query->whereIn($key, $values);
                 }
             })
-
             ->raw();
-
-        dd($this->searchResult);
     }
 
     public function updatedFilters($value, $key)
