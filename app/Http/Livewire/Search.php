@@ -5,28 +5,30 @@ namespace App\Http\Livewire;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Laravel\Scout\Builder;
 use Livewire\Component;
+use Meilisearch\Endpoints\Indexes;
 
 class Search extends Component
 {
-    public $posts;
     public $paginator;
     public $allCategories;
     public $allUsers;
 
-    public $tempCategories;
+    public $scoutBuilder;
+
+    public $searchResult = null;
 
     public ?string $searchString = null;
 
-    public ?array $filters = [
-        'users' => [],
-        'categories' => [],
-    ];
+    public ?array $filters = [];
+
+    public array $facets = ['category_id', 'user_id'];
 
     public function mount()
     {
+        $this->allCategories = Category::all();
         $this->allUsers = User::all();
         $this->search();
     }
@@ -36,56 +38,39 @@ class Search extends Component
         return view('livewire.search');
     }
 
-    public function search($filter = true)
+    public function search()
     {
-        $this->posts = Post::search(trim($this->searchString) ?? '')
-            ->query(function ($query) {
-                $query
-                    ->join('categories', 'posts.category_id', 'categories.id')
-                    ->join('users', 'posts.user_id', 'users.id')
-                    ->select([
-                        'posts.id',
-                        'posts.title',
-                        'posts.content',
-                        'categories.id as category_id',
-                        'categories.name as category_name',
-                        'categories.description as category_description',
-                        'users.id as user_id',
-                        'users.name as user_name',
-                    ])
-                    ->when(!empty($this->filters['categories']), function (Builder $query) {
-                        $query->whereIn('category_id', $this->filters['categories']);
-                    })
-                    ->when(!empty($this->filters['users']), function (Builder $query) {
-                        $query->whereIn('user_id', $this->filters['users']);
-                    })
-                    ->orderBy('posts.id', 'DESC');
+        $this->searchResult = Post::search(trim($this->searchString) ?? '', function (Indexes $meilisearch, $query, $options) {
+            $options['facets'] = $this->facets;
+
+            return $meilisearch->search($query, $options);
+        })
+
+            ->when(!empty($this->filters), function (Builder $query) {
+                foreach ($this->filters as $key => $values) {
+                    $query->whereIn($key, $values);
+                }
             })
-            ->paginate(20)
-            ->toArray();
 
-        if ($filter) {
-            $this->searchCategories();
-            $this->searchUsers();
-        }
-    }
+            ->raw();
 
-    private function searchCategories()
-    {
-        $this->allCategories = Arr::sort(Arr::pluck($this->posts['data'], 'category_name', 'category_id'));
-    }
-
-    private function searchUsers()
-    {
-        $this->allUsers = Arr::sort(Arr::pluck($this->posts['data'], 'user_name', 'user_id'));
+        dd($this->searchResult);
     }
 
     public function updatedFilters($value, $key)
     {
+        // turns false to null
         if (!$value) {
             Arr::forget($this->filters, $key);
         }
 
-        $this->search(false);
+        // removes empty filters
+        foreach ($this->filters as $key => $value) {
+            if (empty($value)) {
+                unset($this->filters[$key]);
+            }
+        }
+
+        $this->search();
     }
 }

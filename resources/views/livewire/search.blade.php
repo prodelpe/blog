@@ -8,31 +8,34 @@
             <button type="button" class="p-2 bg-black text-white" wire:click="search">Search</button>
         </div>
 
-        <div class="p-4 rounded bg-gray-100 space-y-2">
+        <div class="p-4 rounded bg-gray-100 space-y-4">
             <div>
                 <h2 class="font-bold">Categories</h2>
-                @foreach($allCategories as $key => $value)
+                @foreach($allCategories as $key => $category)
                     <div class="flex gap-2">
                         <input type="checkbox"
-                               wire:key="filters.category-{{ $key }}"
-                               wire:model="filters.categories.{{ $key }}"
-                               value="{{ $key }}"
+                               wire:key="filters.category-{{ $category->id }}"
+                               wire:model="filters.category_id.{{ $category->id }}"
+                               value="{{ $category->id }}"
+                               @disabled(!in_array($category->id, array_keys($searchResult['facetDistribution']['category_id'])))
                         >
-                        <label>{{ $value }}</label>
+                        <label>{{ $category->name }}</label>
                     </div>
                 @endforeach
+
             </div>
 
             <div>
                 <h2 class="font-bold">Users</h2>
-                @foreach($allUsers as $key => $value)
+                @foreach($allUsers as $key => $user)
                     <div class="flex gap-2">
                         <input type="checkbox"
-                               wire:key="filters.user-{{ $key }}"
-                               wire:model="filters.users.{{ $key }}"
-                               value="{{ $key }}"
+                               wire:key="filters.user-{{ $user->id }}"
+                               wire:model="filters.user_id.{{ $user->id }}"
+                               value="{{ $user->id }}"
+                               @disabled(!in_array($user->id, array_keys($searchResult['facetDistribution']['user_id'])))
                         >
-                        <label>{{ $value }}</label>
+                        <label>{{ $user->name }}</label>
                     </div>
                 @endforeach
             </div>
@@ -42,32 +45,22 @@
     {{-- Results --}}
     <div class="col-span-3">
 
-            <div class="flex justify-between items-center">
-                <div>
-                    S'han trobat {{ $posts['total'] }} resultats per la cerca
-                </div>
-
-                <div>
-                    @if($posts['last_page'] > 1)
-                        @isset($posts['prev_page_url'])
-                            <a href="{{ $posts['prev_page_url'] }}">Prev</a>
-                        @endisset
-                        @isset($posts['next_page_url'])
-                            <a href="{{ $posts['next_page_url'] }}">Next</a>
-                        @endisset
-                    @endif
-                </div>
+        <div class="flex justify-between items-center">
+            <div>
+                S'han trobat {{ $searchResult['estimatedTotalHits'] }} resultats per la cerca
             </div>
 
-            <hr class="my-4">
+        </div>
+
+        <hr class="my-4">
 
         <div class="space-y-4">
-            @foreach($posts['data'] as $key => $post)
+            @foreach($searchResult['hits'] as $key => $post)
                 <div class="space-y-3">
                     <div class="space-y-1">
                         <h2 class="text-lg font-bold">{{ $post['id'] }} - {{ $post['title'] }}</h2>
-                        <h3>By {{ $post['user_name'] }}</h3>
-                        <h4 class="text-sm">Category: {{ $post['category_name'] }}</h4>
+                        <h3>By {{ $post['user_id'] }}</h3>
+                        <h4 class="text-sm">Category: {{ $post['category_id'] }}</h4>
                     </div>
                     <div>
                         {!! $post['content'] !!}
@@ -77,19 +70,5 @@
             @endforeach
         </div>
 
-        <hr>
-
-        <div class="flex justify-end gap-2 mt-4">
-            @if($posts['last_page'] > 1)
-                @isset($posts['prev_page_url'])
-                    <a href="{{ $posts['prev_page_url'] }}">Prev</a>
-                @endisset
-                @isset($posts['next_page_url'])
-                    <a href="{{ $posts['next_page_url'] }}">Next</a>
-                @endisset
-            @endif
-        </div>
-
     </div>
-
 </div>
