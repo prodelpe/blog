@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
+    Route::get('/', [PostController::class, 'index'])->name('posts.index');
+    Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
 
-Route::get('/', [PostController::class, 'index'])->name('posts.index');
-Route::get('/search', [PostController::class, 'search'])->name('posts.search');
+Route::get('/index', [IndexController::class, 'index'])->name('index');
+Route::get('/cinema', [IndexController::class, 'cinema'])->name('cinema');

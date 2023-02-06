@@ -28,6 +28,6 @@ class DatabaseSeeder extends Seeder
 
         Post::factory(100)->create();
 
-        Artisan::call('set-scout');
+        Artisan::call('create-indexes');
     }
 }

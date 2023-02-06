@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Arr;
 use Laravel\Scout\Builder;
 use Livewire\Component;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Meilisearch\Client;
 use Meilisearch\Endpoints\Indexes;
 
 class Search extends Component
@@ -40,8 +42,22 @@ class Search extends Component
 
     public function search()
     {
+        $lang = LaravelLocalization::getCurrentLocale();
+        $client = new Client(env('MEILISEARCH_HOST'));
+
+//        $this->searchResult = $client
+//            ->index("posts_{$lang}")
+//            ->search(trim($this->searchString) ?? '', [
+//                'filter' => 'category_id = 1',
+//                'facets' => $this->facets
+//            ]);
+
+
         $this->searchResult = Post::search(trim($this->searchString) ?? '')
-            ->options(['facets' => $this->facets])
+            ->within("posts_{$lang}")
+            ->options([
+                'facets' => $this->facets
+            ])
             ->when(!empty($this->filters), function (Builder $query) {
                 foreach ($this->filters as $key => $values) {
                     $query->whereIn($key, $values);

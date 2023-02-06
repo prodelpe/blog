@@ -20,8 +20,18 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->text(20),
-            'content' => fake()->paragraphs(rand(3,6), true),
+            'title' => [
+                'ca' => 'ca - ' . fake()->text(20),
+                'es' => 'es - ' . fake()->text(20),
+                'en' => 'en - ' . fake()->text(20),
+            ],
+
+            'content' => [
+                'ca' => 'ca - ' . fake()->paragraphs(rand(3,6), true),
+                'es' => 'es - ' . fake()->paragraphs(rand(3,6), true),
+                'en' => 'en - ' . fake()->paragraphs(rand(3,6), true),
+            ],
+
             'user_id' => User::all()->random()->id,
             'category_id' => Category::all()->random()->id,
         ];

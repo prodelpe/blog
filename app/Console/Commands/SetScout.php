@@ -32,11 +32,9 @@ class SetScout extends Command
     public function handle()
     {
         Artisan::call('scout:sync-index-settings');
-        Artisan::call('scout:import', ['model' => Category::class]);
-        Artisan::call('scout:import', ['model' => Post::class]);
-        Artisan::call('scout:import', ['model' => User::class]);
-        //Artisan::call('queue:work redis');
-
+        //Artisan::call('scout:import ' . Post::class);
+        //Artisan::call('create-indexes');
+        //Artisan::call('queue:work --queue=redis');
         return Command::SUCCESS;
     }
 }

@@ -6,13 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Scout\Searchable;
+use Spatie\Translatable\HasTranslations;
 
 class Post extends Model
 {
     use HasFactory;
     use Searchable;
+    use HasTranslations;
 
     protected $fillable = [
+        'title',
+        'content',
+    ];
+
+    public $translatable = [
         'title',
         'content',
     ];
@@ -41,5 +48,14 @@ class Post extends Model
     protected function makeAllSearchableUsing($query)
     {
         return $query->with(['user:id,name', 'category:id,name']);
+    }
+
+    public function getTranslatedData(string $lang): array
+    {
+        $attributes = parent::toArray();
+        foreach ($this->getTranslatableAttributes() as $field) {
+            $attributes[$field] = $this->getTranslation($field, $lang);
+        }
+        return $attributes;
     }
 }

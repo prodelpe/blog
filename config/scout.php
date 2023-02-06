@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Post;
+use App\Models\User;
+
 return [
 
     /*
@@ -41,12 +45,12 @@ return [
     |
     */
 
-        'queue' => env('SCOUT_QUEUE', false),
+    'queue' => env('SCOUT_QUEUE', false),
 
-    'queue' => [
-        'connection' => 'redis',
-       // 'queue' => 'default'
-    ],
+//    'queue' => [
+//        'connection' => 'redis',
+//        // 'queue' => 'default'
+//    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -137,22 +141,28 @@ return [
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY', null),
+
         'index-settings' => [
 
-            'posts' => [
-                'filterableAttributes' => ['user_id', 'category_id'],
-                'sortableAttributes' => ['updated_at'],
-            ],
+            // Index generation made directly by PHP
+            // CreateIndexes console command
+            // PostObserver every time it saves
 
-            'users' => [
-                'filterableAttributes' => ['id', 'name', 'email'],
-                'sortableAttributes' => ['updated_at'],
-            ],
+//            Post::class => [
+//                'searchableAttributes' => ['title', 'content'],
+//                'filterableAttributes' => ['user_id', 'category_id'],
+//                'sortableAttributes' => ['updated_at'],
+//            ],
 
-            'categories' => [
-                'filterableAttributes' => ['id'],
-                'sortableAttributes' => ['updated_at'],
-            ],
+//            User::class => [
+//                'filterableAttributes' => ['id', 'name', 'email'],
+//                'sortableAttributes' => ['updated_at'],
+//            ],
+
+//            Category::class => [
+//                'filterableAttributes' => ['id'],
+//                'sortableAttributes' => ['updated_at'],
+//            ],
         ],
     ],
 
