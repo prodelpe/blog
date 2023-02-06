@@ -9,16 +9,11 @@ use Illuminate\Support\Arr;
 use Laravel\Scout\Builder;
 use Livewire\Component;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Meilisearch\Client;
-use Meilisearch\Endpoints\Indexes;
 
 class Search extends Component
 {
-    public $paginator;
     public $allCategories;
     public $allUsers;
-
-    public $scoutBuilder;
 
     public $searchResult = null;
 
@@ -27,9 +22,11 @@ class Search extends Component
     public ?array $filters = [];
 
     public array $facets = ['category_id', 'user_id'];
+    public ?string $lang = null;
 
     public function mount()
     {
+        $this->lang = LaravelLocalization::getCurrentLocale();
         $this->allCategories = Category::all();
         $this->allUsers = User::all();
         $this->search();
@@ -42,10 +39,10 @@ class Search extends Component
 
     public function search()
     {
-        $lang = LaravelLocalization::getCurrentLocale();
+
 
         $this->searchResult = Post::search(trim($this->searchString) ?? '')
-            ->within("posts_{$lang}")
+            ->within("posts_{$this->lang}")
             ->options([
                 'facets' => $this->facets
             ])
