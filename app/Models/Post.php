@@ -49,13 +49,4 @@ class Post extends Model
     {
         return $query->with(['user:id,name', 'category:id,name']);
     }
-
-    public function getTranslatedData(string $lang): array
-    {
-        $attributes = parent::toArray();
-        foreach ($this->getTranslatableAttributes() as $field) {
-            $attributes[$field] = $this->getTranslation($field, $lang);
-        }
-        return $attributes;
-    }
 }

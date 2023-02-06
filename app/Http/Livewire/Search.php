@@ -43,15 +43,6 @@ class Search extends Component
     public function search()
     {
         $lang = LaravelLocalization::getCurrentLocale();
-        $client = new Client(env('MEILISEARCH_HOST'));
-
-//        $this->searchResult = $client
-//            ->index("posts_{$lang}")
-//            ->search(trim($this->searchString) ?? '', [
-//                'filter' => 'category_id = 1',
-//                'facets' => $this->facets
-//            ]);
-
 
         $this->searchResult = Post::search(trim($this->searchString) ?? '')
             ->within("posts_{$lang}")

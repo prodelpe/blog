@@ -143,26 +143,9 @@ return [
         'key' => env('MEILISEARCH_KEY', null),
 
         'index-settings' => [
-
             // Index generation made directly by PHP
-            // CreateIndexes console command
-            // PostObserver every time it saves
-
-//            Post::class => [
-//                'searchableAttributes' => ['title', 'content'],
-//                'filterableAttributes' => ['user_id', 'category_id'],
-//                'sortableAttributes' => ['updated_at'],
-//            ],
-
-//            User::class => [
-//                'filterableAttributes' => ['id', 'name', 'email'],
-//                'sortableAttributes' => ['updated_at'],
-//            ],
-
-//            Category::class => [
-//                'filterableAttributes' => ['id'],
-//                'sortableAttributes' => ['updated_at'],
-//            ],
+            // When model makes a save() PostObserver is called
+            // and calls CreateIndexes console command
         ],
     ],
 
