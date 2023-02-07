@@ -12,8 +12,15 @@
 <div class="container mx-auto my-4">
     <form method="post" action="{{ route('posts.store') }}" class="space-y-4 my-4">
         @csrf
+        title
         <input class="w-full border border-black" type="text" name="title"/>
-        <textarea class="h-24 w-full border border-black" name="content"></textarea>
+        body
+        <textarea class="h-24 w-full border border-black" name="body"></textarea>
+        user
+        <input class="w-full border border-black" type="number" name="user_id"/>
+        category
+        <input class="w-full border border-black" type="number" name="category_id"/>
+
         <input class="border border-black p-2" type="submit" value="Submit">
     </form>
 </div>

@@ -142,11 +142,11 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY', null),
 
-        'index-settings' => [
-            // Index generation made directly by PHP
-            // When model makes a save() PostObserver is called
-            // and calls CreateIndexes console command
-        ],
+//        'index-settings' => [
+//            // Index generation made directly by PHP
+//            // When model makes a save() PostObserver is called
+//            // and calls CreateIndexes console command
+//        ],
     ],
 
 ];

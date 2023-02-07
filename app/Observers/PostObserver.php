@@ -24,17 +24,16 @@ class PostObserver
      */
     public function created(Post $post)
     {
-//        foreach (LaravelLocalization::getSupportedLanguagesKeys() as $lang) {
-//            $this->client->index("posts_{$lang}")->addDocuments([
-//                [
-//                    'id' => 287947,
-//                    'title' => 'Shazam',
-//                    'poster' => 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
-//                    'overview' => 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
-//                    'release_date' => '2019-03-23'
-//                ]
-//            ]);
-//        }
+        foreach (LaravelLocalization::getSupportedLanguagesKeys() as $lang) {
+            $this->client->index("posts_{$lang}")->addDocuments([
+                [
+                    'title' => $post->getTranslation('title', $lang),
+                    'body' => $post->getTranslation('body', $lang),
+                    'user_id' => $post->user_id,
+                    'category_id' => $post->category_id
+                ]
+            ]);
+        }
     }
 
     /**

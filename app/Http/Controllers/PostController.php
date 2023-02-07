@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -37,11 +39,12 @@ class PostController extends Controller
     public function store(Request $request)
     {
         Post::create([
-            'title' => $request->name,
-            'body' => 'yes',
-            'user_id' => 1,
-            'category_id' => 1,
+            'title' => $request->title,
+            'body' => $request->body,
+            'user_id' => $request->user_id,
+            'category_id' => $request->category_id,
         ]);
+
         return redirect()->route('posts.index');
     }
 
