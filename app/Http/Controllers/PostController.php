@@ -38,14 +38,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        Post::create([
+        $post = Post::create([
             'title' => $request->title,
             'body' => $request->body,
             'user_id' => $request->user_id,
             'category_id' => $request->category_id,
         ]);
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.edit', $post);
     }
 
     /**
@@ -63,11 +63,11 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit($id)
     {
-
+        return view('posts.edit', ['post' => Post::find($id)]);
     }
 
     /**
@@ -79,16 +79,28 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $post = Post::find($id);
+
+        $post->fill([
+            'title' => $request->title,
+            'body' => $request->body,
+            'user_id' => $request->user_id,
+            'category_id' => $request->category_id,
+        ])->save();
+
+        return redirect()->route('posts.edit', $post);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        //
+        Post::destroy($id);
+
+        return redirect()->route('posts.index');
     }
 }

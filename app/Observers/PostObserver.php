@@ -24,16 +24,7 @@ class PostObserver
      */
     public function created(Post $post)
     {
-        foreach (LaravelLocalization::getSupportedLanguagesKeys() as $lang) {
-            $this->client->index("posts_{$lang}")->addDocuments([
-                [
-                    'title' => $post->getTranslation('title', $lang),
-                    'body' => $post->getTranslation('body', $lang),
-                    'user_id' => $post->user_id,
-                    'category_id' => $post->category_id
-                ]
-            ]);
-        }
+        $this->updated($post);
     }
 
     /**
@@ -44,6 +35,17 @@ class PostObserver
      */
     public function updated(Post $post)
     {
+        foreach (LaravelLocalization::getSupportedLanguagesKeys() as $lang) {
+            $this->client->index("posts_{$lang}")->updateDocuments([
+                [
+                    'id' => $post->id,
+                    'title' => $post->getTranslation('title', $lang) ?? '',
+                    'body' => $post->getTranslation('body', $lang) ?? '',
+                    'user_id' => $post->user_id ?? 0,
+                    'category_id' => $post->category_id ?? 0,
+                ]
+            ]);
+        }
     }
 
     /**
@@ -54,6 +56,9 @@ class PostObserver
      */
     public function deleted(Post $post)
     {
+        foreach (LaravelLocalization::getSupportedLanguagesKeys() as $lang) {
+            $this->client->index("posts_{$lang}")->deleteDocument($post->id);
+        }
     }
 
     /**
