@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\Models\Category;
-use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Laravel\Scout\Builder;
@@ -21,6 +20,7 @@ class Search extends Component
     public ?string $searchString = null;
 
     public ?array $filters = [];
+    public ?array $meiliFilters = [];
 
     public array $facets = ['category_id', 'user_id'];
     public ?string $lang = null;
@@ -43,21 +43,10 @@ class Search extends Component
         $lang = LaravelLocalization::getCurrentLocale();
         $client = new Client(env('MEILISEARCH_HOST'));
 
-        // Converting filters into a meilisearch readable array
-        $meiliFilters = [];
-        $iteration = 0;
-        foreach($this->filters as $key => $filter){
-            foreach($filter as $k => $f){
-                $meiliFilters[$iteration][] = "{$key} = {$filter[$k]}";
-            }
-            $iteration++;
-        }
-        //**
-
         $this->searchResult = $client
             ->index("posts_{$lang}")
             ->search(trim($this->searchString) ?? '', [
-                'filter' => $meiliFilters,
+                'filter' => $this->meiliFilters,
                 'facets' => $this->facets
             ])->getRaw();
     }
@@ -76,6 +65,24 @@ class Search extends Component
             }
         }
 
+        $this->generateMeiliFilters();
         $this->search();
+    }
+
+    /**
+     * Converts a filter array into a meilisearch readable array
+     * https://docs.meilisearch.com/reference/api/search.html#filter
+     * @return void
+     */
+    private function generateMeiliFilters(): void
+    {
+        $this->meiliFilters = [];
+        $iteration = 0;
+        foreach ($this->filters as $key => $filter) {
+            foreach ($filter as $k => $f) {
+                $this->meiliFilters[$iteration][] = "{$key} = {$filter[$k]}";
+            }
+            $iteration++;
+        }
     }
 }
