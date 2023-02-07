@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Laravel\Scout\Builder;
 use Livewire\Component;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Meilisearch\Client;
 
 class Search extends Component
 {
@@ -39,19 +40,26 @@ class Search extends Component
 
     public function search()
     {
+        $lang = LaravelLocalization::getCurrentLocale();
+        $client = new Client(env('MEILISEARCH_HOST'));
 
+        // Converting filters into a meilisearch readable array
+        $meiliFilters = [];
+        $iteration = 0;
+        foreach($this->filters as $key => $filter){
+            foreach($filter as $k => $f){
+                $meiliFilters[$iteration][] = "{$key} = {$filter[$k]}";
+            }
+            $iteration++;
+        }
+        //**
 
-        $this->searchResult = Post::search(trim($this->searchString) ?? '')
-            ->within("posts_{$this->lang}")
-            ->options([
+        $this->searchResult = $client
+            ->index("posts_{$lang}")
+            ->search(trim($this->searchString) ?? '', [
+                'filter' => $meiliFilters,
                 'facets' => $this->facets
-            ])
-            ->when(!empty($this->filters), function (Builder $query) {
-                foreach ($this->filters as $key => $values) {
-                    $query->whereIn($key, $values);
-                }
-            })
-            ->raw();
+            ])->getRaw();
     }
 
     public function updatedFilters($value, $key)

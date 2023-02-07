@@ -10,7 +10,6 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
-        "laravel/scout": "^9.8",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.11",
         "mcamara/laravel-localization": "^1.7",
