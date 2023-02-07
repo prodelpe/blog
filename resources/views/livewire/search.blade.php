@@ -63,7 +63,7 @@
                         <h4 class="text-sm">Category: {{ $post['category_id'] }}</h4>
                     </div>
                     <div>
-                        {!! $post['content'] !!}
+                        {!! $post['body'] !!}
                     </div>
                 </div>
                 <hr>

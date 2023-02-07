@@ -16,12 +16,12 @@ class Post extends Model
 
     protected $fillable = [
         'title',
-        'content',
+        'body',
     ];
 
     public $translatable = [
         'title',
-        'content',
+        'body',
     ];
 
     public function user(): BelongsTo
@@ -39,7 +39,7 @@ class Post extends Model
         return [
             'id' => $this->getKey(),
             'title' => $this->title,
-            'content' => $this->content,
+            'body' => $this->body,
             'user_id' => (int)$this->user_id,
             'category_id' => (int)$this->category_id,
         ];

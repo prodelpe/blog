@@ -42,7 +42,7 @@ class CreateIndexes extends Command
 
             $client->index("posts_{$lang}")->addDocuments($posts);
             $client->index("posts_{$lang}")->updateFilterableAttributes(['user_id', 'category_id']);
-            //$client->index("posts_{$lang}")->updateSearchableAttributes(['title', 'content']);
+            //$client->index("posts_{$lang}")->updateSearchableAttributes(['title', 'body']);
             $client->index("posts_{$lang}")->updateSortableAttributes(['updated_at']);
         }
 

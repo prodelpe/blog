@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     Route::get('/', [PostController::class, 'index'])->name('posts.index');
     Route::get('/search', [PostController::class, 'search'])->name('posts.search');
+
+    Route::get('/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/store', [PostController::class, 'store'])->name('posts.store');
 });
 
 Route::get('/index', [IndexController::class, 'index'])->name('index');

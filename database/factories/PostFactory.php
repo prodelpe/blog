@@ -26,7 +26,7 @@ class PostFactory extends Factory
                 'en' => 'en - ' . fake()->text(20),
             ],
 
-            'content' => [
+            'body' => [
                 'ca' => 'ca - ' . fake()->paragraphs(rand(3,6), true),
                 'es' => 'es - ' . fake()->paragraphs(rand(3,6), true),
                 'en' => 'en - ' . fake()->paragraphs(rand(3,6), true),
